@@ -48,7 +48,7 @@
         </div>
     </header>
 
-    <div class="max-w-7xl mx-auto px-4 my-6">
+    <div class="max-w-7xl mx-auto px-4 my-6 hidden">
         <div class="bg-gray-900/40 border border-gray-800 p-3 rounded-xl flex flex-col sm:flex-row items-center justify-between gap-4">
             <div class="flex items-center space-x-2 text-xs text-gray-400">
                 <i class="fa-solid fa-circle-info text-green-500"></i>
@@ -119,13 +119,22 @@
         let catalogo = []; let carrito = [];
         
         window.onload = function() {
-            const url = localStorage.getItem('toxic_landing_url');
-            const alias = localStorage.getItem('toxic_alias') || 'TOXIC.STORE.MP';
-            document.getElementById('aliasBancario').value = alias;
-            if (url) {
-                document.getElementById('apiUrlPublica').value = url;
-                conectarBancoDatos();
-            }
+    // 1. REEMPLAZA ESTO CON TU URL LARGA DE GOOGLE APPS SCRIPT (LA QUE TERMINA EN /exec)
+    const urlFijaGoogle = "https://script.google.com/macros/s/https://script.google.com/macros/s/AKfycbzC1f5BQURduag7QQJihKGxwC2KRKqNVlKPgOcTjhegW15Deto6JIFpdIALKibTIPSu/exec/exec";
+    
+    // 2. REEMPLAZA ESTO CON TU ALIAS REAL DE MERCADO PAGO
+    const aliasFijoBancario = "toxicstore.mp"; 
+
+    // El sistema ahora se autoconfigura solo sin depender de la memoria del navegador
+    localStorage.setItem('toxic_landing_url', urlFijaGoogle);
+    localStorage.setItem('toxic_alias', aliasFijoBancario);
+    
+    document.getElementById('aliasBancario').value = aliasFijoBancario;
+    document.getElementById('apiUrlPublica').value = urlFijaGoogle;
+    
+    // Conecta inmediatamente al banco de datos de tu Sheets
+    conectarBancoDatos();
+};
         };
 
         function configurarSitio() {
