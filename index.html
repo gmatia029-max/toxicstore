@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Toxic Store | Tienda Oficial Detailing</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body { background-color: #060709; color: #e2e8f0; font-family: 'Segoe UI', sans-serif; scroll-behavior: smooth; }
+        .toxic-text { color: #39ff14; text-shadow: 0 0 15px rgba(57, 255, 20, 0.5); }
+        .toxic-bg { background-color: #39ff14; }
+        .toxic-border { border-color: #39ff14; }
+        .toxic-glow:hover { box-shadow: 0 0 20px rgba(57, 255, 20, 0.4); border-color: #39ff14; }
+        .hero-bg {
+            background-image: linear-gradient(rgba(6, 7, 9, 0.85), rgba(6, 7, 9, 1)), url('https://images.unsplash.com/photo-1616788494707-ec28f08d05a1?q=80&w=1200&auto=format&fit=crop');
+            background-size: cover; background-position: center;
+        }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #060709; }
+        ::-webkit-scrollbar-thumb { background: #1f2937; border-radius: 4px; }
+    </style>
+</head>
+<body class="relative">
+
+    <nav class="bg-[#0b0c10]/90 backdrop-blur-md sticky top-0 z-40 border-b border-gray-900 px-4 py-4">
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
+            <div class="flex items-center space-x-2">
+                <i class="fa-solid fa-spray-can-sparkles text-2xl toxic-text"></i>
+                <span class="text-xl font-black tracking-widest text-white">TOXIC <span class="toxic-text">STORE</span></span>
+            </div>
+            
+            <button onclick="toggleCarrito()" class="relative border border-gray-800 bg-black/50 hover:border-green-400 px-4 py-2 rounded-xl transition flex items-center space-x-2 text-sm text-gray-300">
+                <i class="fa-solid fa-cart-shopping text-green-400"></i>
+                <span class="font-bold hidden sm:inline">Mi Carrito</span>
+                <span id="badgeCarrito" class="bg-green-500 text-black text-xs font-black px-2 py-0.5 rounded-md">0</span>
+            </button>
+        </div>
+    </nav>
+
+    <header class="hero-bg min-h-[50vh] flex items-center justify-center text-center px-4 pt-12">
+        <div class="max-w-3xl space-y-4">
+            <span class="bg-green-950/50 text-green-400 text-xs font-bold px-3 py-1.5 rounded-full border border-green-900/60 uppercase tracking-widest">Tienda Online Autogestionada</span>
+            <h1 class="text-4xl md:text-5xl font-black text-white tracking-tight leading-tight">Armá tu pedido de <br><span class="toxic-text">Detailing Premium</span></h1>
+            <p class="text-gray-400 text-sm md:text-base max-w-xl mx-auto font-light">
+                Seleccioná los insumos para tu nave, cargalos en el carrito y aboná de forma segura por transferencia bancaria.
+            </p>
+        </div>
+    </header>
+
+    <div class="max-w-7xl mx-auto px-4 my-6 hidden">
+        <div class="bg-gray-900/40 border border-gray-800 p-3 rounded-xl flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div class="flex items-center space-x-2 text-xs text-gray-400">
+                <i class="fa-solid fa-circle-info text-green-500"></i>
+                <span><strong>Panel de Configuración:</strong> Sincronizá con tu base de datos y definí tus datos de transferencia.</span>
+            </div>
+            <div class="flex flex-wrap items-center gap-2 justify-end w-full sm:w-auto">
+                <input type="text" id="aliasBancario" placeholder="Tu ALIAS de transferencia" class="bg-black text-xs border border-gray-700 rounded px-2 py-1 w-44 text-slate-300 focus:outline-none">
+                <input type="password" id="apiUrlPublica" placeholder="URL de Google Apps Script" class="bg-black text-xs border border-gray-700 rounded px-2 py-1 w-44 text-slate-300 focus:outline-none">
+                <button onclick="configurarSitio()" class="bg-gray-800 hover:bg-gray-700 text-[11px] px-3 py-1 rounded text-white font-medium transition">Guardar Configuración</button>
+            </div>
+        </div>
+    </div>
+
+    <main class="max-w-7xl mx-auto px-4 py-8 space-y-6">
+        <div id="gridPublica" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div class="col-span-full text-center py-16 text-gray-500 bg-[#060709] rounded-2xl border border-dashed border-gray-800">
+                Configurá tu URL de Google Sheets arriba para renderizar el catálogo de la tienda.
+            </div>
+        </div>
+    </main>
+
+    <div id="sidebarCarrito" class="fixed top-0 right-0 h-full w-full sm:w-[420px] bg-[#0b0c10] border-l border-gray-900 z-50 shadow-2xl p-6 transform translate-x-full transition-transform duration-300 flex flex-col justify-between hidden">
+        <div>
+            <div class="flex justify-between items-center pb-4 border-b border-gray-900">
+                <h3 class="text-lg font-bold flex items-center space-x-2 text-white">
+                    <i class="fa-solid fa-basket-shopping text-green-400"></i>
+                    <span>Tu Pedido Actual</span>
+                </h3>
+                <button onclick="toggleCarrito()" class="text-gray-400 hover:text-white text-xl"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div id="itemsCarritoPublico" class="mt-4 space-y-3 overflow-y-auto max-h-[60vh] pr-1">
+                </div>
+        </div>
+
+        <div class="border-t border-gray-900 pt-4 space-y-4">
+            <div class="flex justify-between items-center text-base font-bold text-white">
+                <span>Total a Transferir:</span>
+                <span id="totalCarritoPublico" class="toxic-text">$0.00</span>
+            </div>
+            <button onclick="finalizarCompraPublica()" class="w-full toxic-bg text-black font-black py-3 rounded-xl hover:bg-green-400 transition tracking-wider text-xs uppercase flex items-center justify-center space-x-2">
+                <i class="fa-brands fa-whatsapp text-base"></i>
+                <span>Confirmar Pedido por Transferencia</span>
+            </button>
+        </div>
+    </div>
+
+    <div id="modalPago" class="fixed inset-0 bg-black/90 z-50 hidden flex items-center justify-center p-4 backdrop-blur-md">
+        <div class="bg-[#0b0c10] border border-gray-800 p-6 rounded-2xl max-w-md w-full text-center space-y-5 shadow-2xl">
+            <div class="w-16 h-16 bg-green-950/40 rounded-full flex items-center justify-center mx-auto border border-green-500/30">
+                <i class="fa-solid fa-building-columns text-2xl text-green-400"></i>
+            </div>
+            <div class="space-y-1">
+                <h3 class="text-xl font-bold text-white">¡Pedido enviado con éxito!</h3>
+                <p class="text-xs text-gray-400">Tu orden fue enviada por WhatsApp. Transferí el total para despachar tu mercadería.</p>
+            </div>
+            <div class="bg-black p-4 rounded-xl border border-gray-900 text-left font-mono text-xs space-y-2 text-gray-300">
+                <p class="font-sans text-xs text-gray-500 font-bold uppercase tracking-wider">Datos de Pago:</p>
+                <p><strong>Banco:</strong> Mercado Pago / Cuenta Digital</p>
+                <p><strong>Alias de Pago:</strong> <span id="modalAliasText" class="text-green-400 font-bold"></span></p>
+                <p><strong>Monto Exacto:</strong> <span id="modalMontoText" class="text-white font-bold"></span></p>
+            </div>
+            <p class="text-[11px] text-gray-500 italic">Una vez realizada la transferencia, adjuntanos el comprobante por el chat de WhatsApp.</p>
+            <button onclick="cerrarModalPago()" class="w-full bg-gray-900 hover:bg-gray-800 text-white font-bold py-2.5 rounded-lg text-xs tracking-wide transition">Entendido / Cerrar Ventana</button>
+        </div>
+    </div>
+
+    <script>
+        let catalogo = []; let carrito = [];
+        
+        window.onload = function() {
+            // 1. URL LIMPIA Y CORREGIDA (Sin duplicados)
+            const urlFijaGoogle = "https://script.google.com/macros/s/AKfycbyEmkILnIdRbIgq3EixSd479EqDI9gOE6_CH8Bz4W9b7DBtYDR-ui6EPz1JSBO9wW97/exec";
+            
+            // 2. TU ALIAS REAL
+            const aliasFijoBancario = "toxicstore.mp"; 
+
+            // Configuración automática en el navegador
+            localStorage.setItem('toxic_landing_url', urlFijaGoogle);
+            localStorage.setItem('toxic_alias', aliasFijoBancario);
+            
+            document.getElementById('aliasBancario').value = aliasFijoBancario;
+            document.getElementById('apiUrlPublica').value = urlFijaGoogle;
+            
+            // Conecta inmediatamente al banco de datos de tu Sheets
+            conectarBancoDatos();
+        };
+
+        function configurarSitio() {
+            const url = document.getElementById('apiUrlPublica').value.trim();
+            const alias = document.getElementById('aliasBancario').value = aliasBancario;
+            if(!url) return alert('Ingresa una URL válida de Google.');
+            
+            localStorage.setItem('toxic_landing_url', url);
+            localStorage.setItem('toxic_alias', alias ? alias : 'TOXIC.STORE.MP');
+            alert('Configuración guardada en tu navegador.');
+            conectarBancoDatos();
+        }
+
+        function conectarBancoDatos() {
+            const url = localStorage.getItem('toxic_landing_url'); if(!url) return;
+            fetch(url, { method: 'POST', mode: 'cors', body: JSON.stringify({ action: 'obtenerProductos' }) })
+            .then(res => res.json()).then(res => {
+                if(res.status === 'success') {
+                    catalogo = res.data;
+                    renderWeb(catalogo);
+                }
+            });
+        }
+
+        function renderWeb(lista) {
+            const grid = document.getElementById('gridPublica');
+            if(lista.length === 0) { grid.innerHTML = '<div class="col-span-full text-center py-12 text-gray-500">No hay stock publicado.</div>'; return; }
+            
+            grid.innerHTML = lista.map(p => {
+                const img = p.imagen && p.imagen.trim().startsWith('http') ? p.imagen.trim() : 'https://images.unsplash.com/photo-1619642751034-765dfdf7c58e?q=80&w=300&auto=format&fit=crop';
+                const desc = p.descripcion ? p.descripcion : 'Insumo premium.';
+                
+                return `
+                    <div class="bg-[#0b0c10] rounded-2xl border border-gray-900 overflow-hidden flex flex-col justify-between toxic-glow transition duration-300">
+                        <div class="h-44 w-full bg-[#111317] p-3 flex items-center justify-center overflow-hidden border-b border-gray-900 relative">
+                            <img src="${img}" alt="Producto" class="object-contain h-full w-full max-h-full rounded-xl">
+                            <span class="absolute bottom-2 left-2 text-[9px] font-mono tracking-widest text-gray-500 bg-black/80 border border-gray-800 px-2 py-0.5 rounded-md uppercase">${p.categoria}</span>
+                        </div>
+                        <div class="p-5 flex-1 flex flex-col justify-between space-y-4">
+                            <div class="space-y-1">
+                                <h3 class="text-base font-bold text-white tracking-tight leading-snug">${p.nombre}</h3>
+                                <p class="text-xs text-gray-400 font-light line-clamp-2">${desc}</p>
+                            </div>
+                            <div class="flex items-center justify-between pt-2 border-t border-gray-900/60">
+                                <span class="text-lg font-black text-white">$${Number(p.precio).toLocaleString('es-AR')}</span>
+                                <button onclick="agregarAlCarritoPublico('${p.sku}')" class="bg-gray-900 hover:bg-black border border-gray-800 hover:border-green-400 text-xs font-bold px-3 py-2 rounded-xl text-gray-300 transition">Agregar</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function toggleCarrito() {
+            const el = document.getElementById('sidebarCarrito');
+            el.classList.toggle('hidden');
+            el.classList.toggle('translate-x-full');
+        }
+
+        function agregarAlCarritoPublico(sku) {
+            const prod = catalogo.find(p => p.sku === sku); if(!prod) return;
+            const item = carrito.find(i => i.sku === sku);
+            
+            if(item) { item.cantidad++; item.total = item.cantidad * item.precioUnitario; }
+            else { carrito.push({ sku: prod.sku, nombre: prod.nombre, cantidad: 1, precioUnitario: Number(prod.precio), total: Number(prod.precio) }); }
+            
+            actualizarInterfazCarrito();
+        }
+
+        function cambiarCantidadPublico(sku, delta) {
+            const item = carrito.find(i => i.sku === sku); if(!item) return;
+            item.cantidad += delta;
+            if(item.cantidad <= 0) { carrito = carrito.filter(i => i.sku !== sku); }
+            else { item.total = item.cantidad * item.precioUnitario; }
+            actualizarInterfazCarrito();
+        }
+
+        function actualizarInterfazCarrito() {
+            const cantTotal = carrito.reduce((acc, i) => acc + i.cantidad, 0);
+            document.getElementById('badgeCarrito').innerText = cantTotal;
+            
+            const contenedor = document.getElementById('itemsCarritoPublico');
+            if(carrito.length === 0) {
+                contenedor.innerHTML = '<p class="text-sm text-gray-500 text-center py-8">El carrito está vacío.</p>';
+                document.getElementById('totalCarritoPublico').innerText = "$0.00";
+                return;
+            }
+
+            contenedor.innerHTML = carrito.map(item => `
+                <div class="bg-black p-3 rounded-xl border border-gray-900 flex justify-between items-center text-xs">
+                    <div class="max-w-[55%]">
+                        <h4 class="font-bold text-white truncate">${item.nombre}</h4>
+                        <p class="text-gray-500">$${item.precioUnitario.toLocaleString('es-AR')} c/u</p>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <div class="flex items-center bg-gray-900 border border-gray-800 rounded-md">
+                            <button onclick="cambiarCantidadPublico('${item.sku}', -1)" class="px-2 py-0.5 text-gray-400 hover:text-white">-</button>
+                            <span class="px-1 text-gray-200 font-bold font-mono">${item.cantidad}</span>
+                            <button onclick="cambiarCantidadPublico('${item.sku}', 1)" class="px-2 py-0.5 text-gray-400 hover:text-white">+</button>
+                        </div>
+                        <span class="font-bold text-slate-200 w-16 text-right">$${item.total.toLocaleString('es-AR')}</span>
+                    </div>
+                </div>
+            `).join('');
+
+            const total = carrito.reduce((acc, i) => acc + i.total, 0);
+            document.getElementById('totalCarritoPublico').innerText = `$${total.toLocaleString('es-AR', {minimumFractionDigits:2})}`;
+        }
+
+        function finalizarCompraPublica() {
+            if(carrito.length === 0) return alert('El carrito está vacío.');
+            
+            const totalStr = document.getElementById('totalCarritoPublico').innerText;
+            const aliasBancario = localStorage.getItem('toxic_alias') || 'TOXIC.STORE.MP';
+
+            // Armar texto del mensaje para enviarte a tu WhatsApp
+            let texto = `🛒 *NUEVO PEDIDO - TOXIC STORE*\n`;
+            texto += `==================================\n`;
+            texto += `*Método de Pago Seleccionado:* Transferencia Bancaria\n`;
+            texto += `==================================\n\n`;
+            
+            carrito.forEach(i => {
+                texto += `• *${i.nombre}* \n  _Cantidad: ${i.cantidad} u. x $${i.precioUnitario.toLocaleString('es-AR')} -> $${i.total.toLocaleString('es-AR')}_\n`;
+            });
+            
+            texto += `\n==================================\n`;
+            texto += `*TOTAL NETO A ABONAR:* ${totalStr}\n\n`;
+            texto += `Solicito los datos para realizar la transferencia y concretar la compra. ¡Muchas gracias!`;
+
+            // Disparar WhatsApp Web o App
+            const urlWsp = "https://api.whatsapp.com/send?text=" + encodeURIComponent(texto);
+            window.open(urlWsp, '_blank');
+
+            // Abrir el cartel elegante en pantalla con tus datos bancarios
+            document.getElementById('modalAliasText').innerText = aliasBancario;
+            document.getElementById('modalMontoText').innerText = totalStr;
+            document.getElementById('modalPago').classList.remove('hidden');
+        }
+
+        function cerrarModalPago() {
+            document.getElementById('modalPago').classList.add('hidden');
+            carrito = [];
+            actualizarInterfazCarrito();
+            toggleCarrito();
+        }
+    </script>
+</body>
+</html>
