@@ -64,6 +64,12 @@
 
     <main class="max-w-7xl mx-auto px-4 py-8 space-y-6">
         <div id="gridPublica" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div class="max-w-md mx-auto md:mx-0 pb-2">
+        <div class="relative">
+            <input type="text" id="buscadorProductos" oninput="filtrarCatalogoPublico()" placeholder="Buscar producto, categoría o material (ej: cuero)..." class="w-full bg-[#0b0c10] border border-gray-900 rounded-xl pl-10 pr-4 py-3 text-sm text-white focus:outline-none focus:border-green-400 transition placeholder-gray-500">
+            <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3.5 text-gray-500 text-sm"></i>
+        </div>
+    </div>
             <div class="col-span-full text-center py-16 text-gray-500 bg-[#060709] rounded-2xl border border-dashed border-gray-800">
                 Configurá tu URL de Google Sheets arriba para renderizar el catálogo de la tienda.
             </div>
@@ -135,6 +141,19 @@
             // Conecta inmediatamente al banco de datos de tu Sheets
             conectarBancoDatos();
         };
+        // FUNCIÓN DE FILTRADO EN TIEMPO REAL
+        function filtrarCatalogoPublico() {
+            const termino = document.getElementById('buscadorProductos').value.toLowerCase().trim();
+            if (!termino) { renderWeb(catalogo); return; }
+
+            const productosFiltrados = catalogo.filter(p => {
+                const nombre = p.nombre ? p.nombre.toLowerCase() : "";
+                const categoria = p.categoria ? p.categoria.toLowerCase() : "";
+                const descripcion = p.descripcion ? p.descripcion.toLowerCase() : "";
+                return nombre.includes(termino) || categoria.includes(termino) || descripcion.includes(termino);
+            });
+            renderWeb(productosFiltrados);
+        }
 
         function configurarSitio() {
             const url = document.getElementById('apiUrlPublica').value.trim();
