@@ -79,6 +79,27 @@
         </div>
 
     </main>
+    <div id="modalProductoDetalle" onclick="cerrarModalDetalle(event)" class="fixed inset-0 bg-black/85 z-50 hidden flex items-center justify-center p-4 backdrop-blur-sm transition-all duration-300">
+        <div id="contenidoModalDetalle" class="bg-[#0b0c10] border border-gray-800 p-6 rounded-2xl max-w-lg w-full relative space-y-4 shadow-2xl transform scale-95 transition-transform duration-300">
+            <button onclick="document.getElementById('modalProductoDetalle').classList.add('hidden')" class="absolute top-4 right-4 text-gray-500 hover:text-white text-xl transition">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <div class="h-64 w-full bg-[#111317] p-4 flex items-center justify-center rounded-xl overflow-hidden relative border border-gray-900">
+                <img id="modalDetalleImg" src="" alt="Producto Grande" class="object-contain h-full w-full">
+                <span id="modalDetalleCat" class="absolute top-3 left-3 text-[10px] font-black tracking-wider text-[#39ff14] bg-[#0b0c10]/95 border border-gray-900 px-2.5 py-1 rounded-md uppercase"></span>
+            </div>
+            <div class="space-y-2">
+                <h3 id="modalDetalleNombre" class="text-xl font-black text-white tracking-tight"></h3>
+                <p id="modalDetalleDesc" class="text-sm text-gray-400 font-light leading-relaxed"></p>
+            </div>
+            <div class="flex items-center justify-between pt-4 border-t border-gray-900">
+                <span id="modalDetallePrecio" class="text-2xl font-black text-white"></span>
+                <button id="modalDetalleBtnAgregar" class="bg-gray-900 hover:bg-black border border-gray-800 hover:border-green-400 font-bold px-4 py-2.5 rounded-xl text-sm text-gray-300 transition">
+                    Agregar al Carrito
+                </button>
+            </div>
+        </div>
+    </div>
 
     <div id="sidebarCarrito" class="fixed top-0 right-0 h-full w-full sm:w-[420px] bg-[#0b0c10] border-l border-gray-900 z-50 shadow-2xl p-6 transform translate-x-full transition-transform duration-300 flex flex-col justify-between hidden">
         <div>
@@ -189,13 +210,16 @@
                 const img = p.imagen && p.imagen.trim().startsWith('http') ? p.imagen.trim() : 'https://images.unsplash.com/photo-1619642751034-765dfdf7c58e?q=80&w=300&auto=format&fit=crop';
                 const desc = p.descripcion ? p.descripcion : 'Insumo premium.';
                 
-                return `
-                    <div class="bg-[#0b0c10] rounded-2xl border border-gray-900 overflow-hidden flex flex-col justify-between toxic-glow transition duration-300">
-                        <div class="h-44 w-full bg-[#111317] p-3 flex items-center justify-center overflow-hidden border-b border-gray-900 relative">
-                            <img src="${img}" alt="Producto" class="object-contain h-full w-full max-h-full rounded-xl">
-                            <span class="absolute bottom-2 left-2 text-[9px] font-mono tracking-widest text-gray-500 bg-black/80 border border-gray-800 px-2 py-0.5 rounded-md uppercase">${p.categoria}</span>
-                        </div>
-                        <div class="p-5 flex-1 flex flex-col justify-between space-y-4">
+               return `
+    <div class="bg-[#0b0c10] rounded-2xl border border-gray-900 overflow-hidden flex flex-col justify-between toxic-glow transition duration-300">
+        <div class="h-44 w-full bg-[#111317] p-3 flex items-center justify-center overflow-hidden border-b border-gray-900 relative">
+            <img src="${img}" alt="Producto" class="object-contain h-full w-full max-h-full rounded-xl">
+            
+            <span class="absolute top-3 left-3 text-[10px] font-black tracking-wider text-[#39ff14] bg-[#0b0c10]/95 border border-gray-900 px-2.5 py-1 rounded-md uppercase">
+                ${p.categoria}
+            </span>
+        </div>
+        <div class="p-5 flex-1 flex flex-col justify-between space-y-4">
                             <div class="space-y-1">
                                 <h3 class="text-base font-bold text-white tracking-tight leading-snug">${p.nombre}</h3>
                                 <p class="text-xs text-gray-400 font-light line-clamp-2">${desc}</p>
